@@ -21,8 +21,10 @@ import tensorflow as tf
 
 import json
 
+import io
 import sys
-sys.setdefaultencoding('utf8')
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 try: 
     from tinyenv.flags import flags
