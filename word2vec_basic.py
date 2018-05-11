@@ -336,9 +336,11 @@ np.save(os.path.join(output_dir,'embedding.npy'), final_embeddings)
 # Function to draw visualization of distance between embeddings.
 def plot_with_labels(low_dim_embs, labels, filename):
   assert low_dim_embs.shape[0] >= len(labels), 'More labels than embeddings'
-  plt.figure(figsize=(18, 18))  # in inches
-  plt.rcParams['font.sans-serif'] = ['SimHei'] # 指定默认字体为黑体
   plt.switch_backend('agg')
+  plt.rcParams['font.sans-serif'] = ['SimHei'] # 指定默认字体为黑体
+
+  plt.figure(figsize=(18, 18))  # in inches
+
   for i, label in enumerate(labels):
     x, y = low_dim_embs[i, :]
     plt.scatter(x, y)
