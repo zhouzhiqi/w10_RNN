@@ -21,9 +21,8 @@ import tensorflow as tf
 
 import json
 
-
-# In[53]:
-
+import sys
+sys.setdefaultencoding('utf8')
 
 try: 
     from tinyenv.flags import flags
