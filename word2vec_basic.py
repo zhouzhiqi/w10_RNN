@@ -218,7 +218,7 @@ with graph.as_default():
 
   # Ops and variables pinned to the CPU because of missing GPU implementation
   #with tf.device('/cpu:0'):
-  with tf.device():
+  with tf.variable_scope('word2vec'):
   
     # Look up embeddings for inputs.
     # 初始化字典中每个单词的embeddings，值为-1到1的均匀分布
