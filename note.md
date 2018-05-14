@@ -6,7 +6,7 @@
 > Most common words (+UNK) Traceback (most recent call last):
 > File "/tinysrc/word2vec_basic.py", line 111, in 
 >   print('Most common words (+UNK)', count[:5]) 
-UnicodeEncodeError: 'ascii' codec can't encode character '\u3002' in position 18: ordinal not in range(128)
+> UnicodeEncodeError: 'ascii' codec can't encode character '\u3002' in position 18: ordinal not in range(128)
 > ```
 >
 > 原因分析:
@@ -17,12 +17,10 @@ UnicodeEncodeError: 'ascii' codec can't encode character '\u3002' in position 18
 >
 > ```python
 > import io
-import sys
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+> import sys
+> sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 > ```
->
-> 
-
+-----------
 
 > 错误代码: win10 本地运行word2vec_basic.py 
 >
@@ -45,9 +43,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 > 简而言之就是:sans-serif为等宽字体,serif为普通字体
 > """
 > ```
->
-> 
-
+------------------------
 
 > 错误代码: ubuntu16 本地运行word2vec_basic.py 
 >
@@ -73,10 +69,9 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 > 没有办法, 自己下了一个中文字体, 保存在本地, 并在用到中文字段的地方, 指定已下载好的字体
 > """
 > ```
->
+----------------------
 
 
-> 
 > 错误代码: Tinymind上运行word2vec_basic.py 
 >
 > 抛出异常:
@@ -110,11 +105,9 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 > 代码修改: 
 >
 > ```python
-> plt.switch_backend('agg')  
+> plt.switch_backend('agg')
 > ```
->
-> 
-
+----------------
 
 > 错误代码: 本地运行train.py 
 >
@@ -133,9 +126,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 > ```python
 > tf.concat(seq_output, 1)
 > ```
->
-> 
-
+---------------------
 
 
 
