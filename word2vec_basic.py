@@ -19,11 +19,11 @@ from six.moves import urllib
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
+
 import json
 
 import io
 import sys
-
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 try: 
@@ -337,7 +337,7 @@ np.save(os.path.join(output_dir,'embedding.npy'), final_embeddings)
 def plot_with_labels(low_dim_embs, labels, filename):
   assert low_dim_embs.shape[0] >= len(labels), 'More labels than embeddings'
   plt.figure(figsize=(18, 18))  # in inches
-
+  zhfont = mpl.font_manager.FontProperties(fname=os.path.join(data_dir, 'heiti.ttf'))
   for i, label in enumerate(labels):
     x, y = low_dim_embs[i, :]
     plt.scatter(x, y)
@@ -346,9 +346,10 @@ def plot_with_labels(low_dim_embs, labels, filename):
                  xytext=(5, 2),
                  textcoords='offset points',
                  ha='right',
-                 va='bottom')
-
+                 va='bottom',
+                 fontproperties=zhfont)
   plt.savefig(filename)
+  plt.show()
 
 
 # In[52]:
@@ -356,11 +357,11 @@ def plot_with_labels(low_dim_embs, labels, filename):
 
 
 try:
-  # pylint: disable=g-import-not-at-top
   from sklearn.manifold import TSNE
   import matplotlib.pyplot as plt
+  import matplotlib as mpl
   plt.switch_backend('agg')
-  plt.rcParams['font.sans-serif'] = ['SimHei'] # 指定默认字体为黑体
+  #mpl.rcParams['font.sans-serif'] =['simhei'] # 指定默认字体为黑体
 
   tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000, method='exact')
   plot_only = 500
@@ -371,4 +372,3 @@ try:
 except ImportError as ex:
   print('Please install sklearn, matplotlib, and scipy to show embeddings.')
   print(ex)
-
