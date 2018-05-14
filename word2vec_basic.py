@@ -296,15 +296,15 @@ with tf.Session(graph=graph) as session:
     _, loss_val = session.run([optimizer, loss], feed_dict=feed_dict)
     average_loss += loss_val
 
-    if step % 2000 == 0:  #求移动平均loss
+    if step % 20000 == 0:  #求移动平均loss
       if step > 0:
-        average_loss /= 2000
-      # The average loss is an estimate of the loss over the last 2000 batches.
+        average_loss /= 20000
+      # The average loss is an estimate of the loss over the last 20000 batches.
       print('Average loss at step ', step, ': ', average_loss)
       average_loss = 0
 
     # Note that this is expensive (~20% slowdown if computed every 500 steps)
-    if step % 10000 == 0:  #评估一下验证集和整个embeddings的相似性
+    if step % 100000 == 0:  #评估一下验证集和整个embeddings的相似性
       sim = similarity.eval()
       for i in xrange(valid_size):
         valid_word = reverse_dictionary[valid_examples[i]]
