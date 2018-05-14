@@ -217,7 +217,9 @@ with graph.as_default():
   valid_dataset = tf.constant(valid_examples, dtype=tf.int32)
 
   # Ops and variables pinned to the CPU because of missing GPU implementation
-  with tf.device('/cpu:0'):
+  #with tf.device('/cpu:0'):
+  with tf.device():
+  
     # Look up embeddings for inputs.
     # 初始化字典中每个单词的embeddings，值为-1到1的均匀分布
     embeddings = tf.Variable(
@@ -233,6 +235,7 @@ with graph.as_default():
     nce_biases = tf.Variable(tf.zeros([vocabulary_size]))
     # 初始化偏置
 
+    
   # Compute the average NCE loss for the batch.
   # tf.nce_loss automatically draws a new sample of the negative labels each
   # time we evaluate the loss.
