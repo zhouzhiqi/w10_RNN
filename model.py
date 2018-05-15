@@ -6,7 +6,8 @@ import tensorflow as tf
 
 
 class Model():
-    def __init__(self, learning_rate=0.000000001, batch_size=16, num_steps=32, num_words=5000, dim_embedding=128, rnn_layers=3):
+    def __init__(self, learning_rate=0.001, batch_size=16, num_steps=32, 
+                 num_words=5000, dim_embedding=128, rnn_layers=3):
         r"""初始化函数
 
         Parameters
@@ -27,7 +28,7 @@ class Model():
         """
         self.batch_size = batch_size
         self.num_steps = num_steps
-        self.num_words = num_words  #vocab_size 
+        self.num_words = num_words
         self.dim_embedding = dim_embedding
         self.rnn_layers = rnn_layers
         self.learning_rate = learning_rate
@@ -54,49 +55,39 @@ class Model():
                 embed = tf.get_variable(
                     'embedding', [self.num_words, self.dim_embedding])
                 tf.summary.histogram('embed', embed)
-            #batch_size*num_steps*128
+
             data = tf.nn.embedding_lookup(embed, self.X)
 
         with tf.variable_scope('rnn'):
             ##################
             # Your Code here
             ##################
-            data_type = tf.float32
-            lstm_cell = tf.nn.rnn_cell.BasicLSTMCell( self.dim_embedding )
+            lstm_cell = tf.nn.rnn_cell.BasicLSTMCell( self.dim_embedding, forget_bias=0.0, state_is_tuple=True)
             lstm_cell = tf.nn.rnn_cell.DropoutWrapper(lstm_cell, output_keep_prob=self.keep_prob)
-            cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * self.rnn_layers)
+            cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * self.rnn_layers, state_is_tuple=True)
+            self.state_tensor = cell.zero_state(self.batch_size, dtype=tf.float32)
+            seq_output, final_state = tf.nn.dynamic_rnn(cell, data, initial_state=self.state_tensor, scope='rnnlm')
             
-            #rnn_inputs = tf.nn.dropout(data, self.keep_prob)
-            
-            init_state = cell.zero_state(self.batch_size, dtype=tf.float32)
-            self.state_tensor = init_state
-
-            seq_output = []
-            state = init_state
-            with tf.variable_scope("RNN"):
-                for time_step in range(self.num_steps):  #32
-                    if time_step > 0: tf.get_variable_scope().reuse_variables()
-                    (cell_output, state) = cell(data[:, time_step, :], state)
-                    seq_output.append(cell_output)
-            #--------------------------------------------------------------------
-        # flatten it 对RNN输出结果连接并转形为[-1, 128 =self.dim_embedding]
-        seq_output_final = tf.reshape(tf.concat(seq_output, 1), [-1, self.dim_embedding])
-        self.outputs_state_tensor = state
+            self.outputs_state_tensor = final_state
+            #----------------------------------------
+        # flatten it #3x32x128 -> 96x128
+        seq_output_final = tf.reshape(seq_output, [-1, self.dim_embedding])
 
         with tf.variable_scope('softmax'):
             ##################
             # Your Code here
             ##################
-            softmax_w = tf.get_variable("softmax_w", [self.dim_embedding, self.num_steps], dtype=tf.float32)
-            softmax_b = tf.get_variable("softmax_b", [self.num_steps], dtype=tf.float32)
-            logits = tf.matmul(seq_output_final, softmax_w) + softmax_b
+            softmax_w = tf.get_variable("softmax_w", [self.dim_embedding, self.num_words], dtype=tf.float32)
+            softmax_b = tf.get_variable("softmax_b", [self.num_words], dtype=tf.float32)
+            # 96x128 -> 96x32
+            logits = tf.matmul(seq_output_final, softmax_w) + softmax_b 
 
             #----------------------------------------------------------------------
         tf.summary.histogram('logits', logits)
 
         self.predictions = tf.nn.softmax(logits, name='predictions')
-        loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, 
-                                             labels=tf.reshape(self.Y, [-1]))
+
+        loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=tf.reshape(self.Y, [-1]))
         mean, var = tf.nn.moments(logits, -1)
         self.loss = tf.reduce_mean(loss)
         tf.summary.scalar('logits_loss', self.loss)
@@ -117,4 +108,3 @@ class Model():
         tf.summary.scalar('loss', self.loss)
 
         self.merged_summary_op = tf.summary.merge_all()
-

@@ -29,7 +29,7 @@ def index_data(sentences, dictionary):
 
 def get_train_data(vocabulary, batch_size, num_steps):
     ##################
-    # Your Code here 返回的是文字的ID
+    # Your Code here
     ##################
     raw_data = vocabulary
     data_len = len(raw_data)
@@ -39,11 +39,14 @@ def get_train_data(vocabulary, batch_size, num_steps):
         data[i] = raw_data[batch_len * i:batch_len * (i + 1)]
     epoch_size = (batch_len - 1) // num_steps
     data = np.array(data)
+    print('{} steps in every epoch '.format(epoch_size))
     for i in range(epoch_size):
         x = data[:, i*num_steps: (i+1)*num_steps]
         y = data[:, i*num_steps+1: (i+1)*num_steps+1]
         yield (x, y)
+        
     #--------------------------------------------------------
+
 
 def build_dataset(words, n_words):
     """Process raw inputs into a dataset."""
