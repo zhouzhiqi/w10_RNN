@@ -13,6 +13,13 @@ from model import Model
 from flags import parse_args
 FLAGS, unparsed = parse_args()
 
+import io
+import sys
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+
+
+
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s', level=logging.DEBUG)
 
