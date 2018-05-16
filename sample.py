@@ -86,4 +86,4 @@ with tf.Session() as sess:
             sentence = sentence + word
 
         logging.debug(u'==============[{0}]=============='.format(title))
-        logging.debug(u''.format(sentence))
+        logging.debug(u'{}'.format(sentence))
